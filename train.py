@@ -24,25 +24,27 @@ def get_dataloader(net, train_dataset, data_shape, batch_size, num_workers):
 parser = argparse.ArgumentParser()
 parser.add_argument('--images_root',type=str,help='root folder of images')
 parser.add_argument('--LSTpath', type=str, help= 'path to LST file')
-parser.add_argument('--batch_size', type=int)
-parser.add_argument('--num_epochs', type=int)
-parser.add_argument('--lr', type=float, help='learning rate')
-parser.add_argument('--wd', type=float)
-parser.add_argument('--momentum',type=float)
+parser.add_argument('--batch_size', default = 16, type=int)
+parser.add_argument('--num_epochs', default = 100, type=int)
+parser.add_argument('--lr', type=float, default = 0.001, help='learning rate')
+parser.add_argument('--wd', type=float, default = 0.0005)
+parser.add_argument('--momentum',type=float,default = 0.9)
 parser.add_argument('--netName', type=str, help='name of network to train')
-parser.add_argument('--gpu_ind', type=str, help='comma seperated gpu indicies', default='0')
+parser.add_argument('--gpu_ind', type=str, help='comma seperated gpu indicies', default = '0')
+parser.add_argument('--finetune_model',type=str, help='path to model to finetune from', default = '')
 args = parser.parse_args()
 
-images_root = '/data_ssd/yaniv/SynthText/SynthText'
-LSTpath = '/data_ssd/yaniv/train2.lst'
+images_root = args.images_root
+LSTpath = args.LSTpath
 classes = ['text'] 
-batch_size = 16
-num_epochs = 50
-lr = 0.001
-wd = 0.0005
-momentum = 0.9
-netName = 'textboxes_512_resnet18_v1_custom'
-gpu_ind='2,3'
+batch_size = args.batch_size
+num_epochs = args.num_epochs
+lr = args.lr
+wd = args.wd
+momentum = args.momentum
+netName = args.netName 
+gpu_ind=args.gpu_ind
+path_to_model = args.finetune_model
 
 # load dataset from Lst file
 dataset = gcv.data.LstDetection(LSTpath, root=images_root)
@@ -57,8 +59,12 @@ plt.savefig('labeled_image.jpg')
 
 #initalize model
 net, input_size = model_zoo.get_model(netName, pretrained=False, classes=classes)
-net.initialize()
-net.reset_class(classes)
+if finetune_model == '':
+	net.initialize()
+	net.reset_class(classes)
+else:
+	net.load_parameters(path_to_model)
+	net.reset_class(classes)
 print(net)
 
 train_data = get_dataloader(net, dataset, input_size, batch_size, 0)
@@ -79,7 +85,7 @@ except:
     ctx = [mx.cpu()]
 
 #############################################################################################
-# Start training(finetuning)
+# Start training
 net.collect_params().reset_ctx(ctx)
 trainer = gluon.Trainer(
     net.collect_params(), 'sgd',
@@ -119,4 +125,4 @@ for epoch in range(0, num_epochs):
                 epoch, i, batch_size/(time.time()-btic), name1, loss1, name2, loss2))
         btic = time.time()
 
-net.save_parameters(netName + '.params')
+net.save_parameters(netName + '_icdar2013.params')

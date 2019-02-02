@@ -307,7 +307,7 @@ def textboxes_300_vgg16_atrous_custom(classes, pretrained_base=False, **kwargs):
     base_size = 300
     net = get_textboxes('vgg16_atrous', base_size, features=vgg16_atrous_300, filters=None,
                       sizes=[21, 45, 99, 153, 207, 261, 315],
-                      ratios=[[2, 3, 5, 7, 10]] * 6,
+                      ratios=[[1, 2, 3, 5, 7, 10]] * 6,
                       steps=[8, 16, 32, 64, 100, 300],
                       classes=classes, dataset='',
                       pretrained_base=pretrained_base, **kwargs)
@@ -332,8 +332,8 @@ def textboxes_512_vgg16_atrous_custom(classes, pretrained_base=False, **kwargs):
     kwargs['pretrained'] = False
     base_size = 512
     net = get_textboxes('vgg16_atrous', base_size, features=vgg16_atrous_512, filters=None,
-                      sizes=[51.2, 76.8, 153.6, 230.4, 307.2, 384.0, 460.8, 537.6],
-                      ratios=[[2, 3, 5, 7, 10]] * 6,
+                      sizes=[51.2, 76.8, 153.6, 230.4, 307.2, 384.0, 460.8],
+                      ratios=[[1, 2, 3, 5, 7, 10]] * 6,
                       steps=[8, 16, 32, 64, 128, 256, 512],
                       classes=classes, dataset='',
                       pretrained_base=pretrained_base, **kwargs)
@@ -421,7 +421,7 @@ def textboxes_512_mobilenet1_0_custom(classes, pretrained_base=False, **kwargs):
                       features=['relu22_fwd', 'relu26_fwd'],
                       filters=[512, 512, 256, 256],
                       sizes=[51.2, 102.4, 189.4, 276.4, 363.52, 450.6, 492],
-                      ratios=[[2, 3, 5, 7, 10]] *6 ,
+                      ratios=[[1, 2, 3, 5, 7, 10]] *6 ,
                       steps=[16, 32, 64, 128, 256, 512],
                       classes=classes, dataset='',
                       pretrained_base=pretrained_base, **kwargs)
