@@ -31,7 +31,7 @@ python train.py
   * You can pick-up training from a checkpoint by specifying the path as one of the training parameters (again, see `train.py` for options)
 
 ## TODO
-We have accumulated the following to-do list, which we hope to complete in the near future
+I have accumulated the following to-do list, which we hope to complete in the near future
 - Still to come:
   * [ ] Upload pretrained models 
   * [ ] Adjust output to ICDAR format
